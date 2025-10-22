@@ -1,7 +1,7 @@
 services:
   git:
     image: alpine/git:latest
-    container_name: sakura_git
+    container_name: local_git
     environment:
       - GIT_USER=${GIT_USER:-gituser}
       - GIT_EMAIL=${GIT_EMAIL:-git@local}
