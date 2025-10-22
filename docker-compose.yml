@@ -1,0 +1,22 @@
+services:
+  git:
+    image: alpine/git:latest
+    container_name: sakura_git
+    environment:
+      - GIT_USER=${GIT_USER:-gituser}
+      - GIT_EMAIL=${GIT_EMAIL:-git@local}
+      - INIT_TIMEOUT=${GIT_INIT_TIMEOUT:-30}
+    volumes:
+      - ${WORKSPACE_MOUNT}:${GIT_REPO_PATH}
+      - ./docker/scripts:/scripts:ro
+    working_dir: ${GIT_REPO_PATH}
+    ports:
+      - "${GIT_HOST_PORT:-3000}:9418"
+    entrypoint: ["/bin/sh", "/scripts/init.sh"]
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep git-daemon || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: on-failure:3
